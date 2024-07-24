@@ -1,0 +1,37 @@
+--- Expense Tracker App
+1. Introduction
+    User can track their income and outcome to manage their financial
+2. Features
+    a. Authentication/Authorization
+        - User Login / Register to get Token to use the App
+        - Authentication (JWT Token)
+    b. Expense Management
+        - Create New Income or outcome
+        - Get All Income and Outcome of a User
+        - Edit Income or Outcome of a User
+        - Remove Income or Outcome
+        - Income or Outcome Pagination
+        - Filter income or Outcome by date , category ,...
+        - Report Daily
+3. Model 
+    a.User Entity
+        - user_id(PK , smallint , auto_increment)
+        - username(unique , varchar(30))
+        - email(unique, varchar(30))
+        - password(unique, varchar(30))
+        - profile_image(varchar(200))
+        - balance(decimal)
+        - created_at (date,default(current_timestamp))
+    a. Expense Entity
+        - expense_id
+        - expense_title
+        - expense_type(Income or Outcome)
+        - expense_category
+            + Income (salary,business,...)
+            + Outcome (accomodation,travelling,...)
+        - description
+        - created_at
+
+
+    
+    
