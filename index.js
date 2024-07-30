@@ -4,6 +4,7 @@ import authRouter from './src/routes/authRoutes.js';
 import userRouter from './src/routes/userRoutes.js';
 import expenseRouter from './src/routes/expenseRoute.js';
 import pool from './src/db/dbConnect.js';
+import { validateToken } from './src/utils/jwt_validate.js';
 config();
 // 1. initialize application
 const app = express();
@@ -22,6 +23,10 @@ pool.getConnection((error,connection) => {
 app.use('/api/auth/',authRouter);
 app.use('/api/user/',userRouter);
 app.use('/api/expense',expenseRouter);
+//testing route
+app.get('/' , validateToken , (request,response) => {
+    response.send("Index Route")
+})
 
 app.listen(port , () => {
     console.log(`Server is running on http://localhost:${port}`);
