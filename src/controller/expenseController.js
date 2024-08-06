@@ -13,7 +13,6 @@ export const addNewExpenseController = (request,response) => {
                 message : "Bad Request"
             })
         }
-    
         const sql_insert = `INSERT INTO expense (title,type,category,description,expense_amount,user_id)
                                         VALUES (?,?,?,?,?,?)`;
         const insertValue = [title , type , category , description , expense_amount , row[0].id]
@@ -21,10 +20,31 @@ export const addNewExpenseController = (request,response) => {
             if(error) return response.status(500).json({
                 message : "Add Failed",
             })
-            response.status(200).json({
-                message : "Add Success",
-                result
-            })
+            if(type.toLowerCase() === "income"){
+                const editBalanceSQL = `UPDATE user SET balance = balance + ? WHERE id = (SELECT user_id FROM expense WHERE user_id = ? ORDER BY user_id LIMIT 1)`
+                pool.query(editBalanceSQL,[expense_amount,row[0].id],(error,result) => {
+                    if(error) return response.status(500).json({
+                        message : "Something went wrong"
+                    })
+                    response.status(200).json({
+                        message : "Processing Transaction success",
+                        result
+                    })
+                })
+            }
+            else{
+                const editBalanceSQL = `UPDATE user SET balance = balance - ? WHERE id = (SELECT user_id FROM expense WHERE user_id = ? ORDER BY user_id LIMIT 1)`
+                pool.query(editBalanceSQL,[expense_amount,row[0].id],(error,result) => {
+                    if(error) return response.status(500).json({
+                        message : "Something went wrong"
+                    })
+                    response.status(200).json({
+                        message : "Processing Transaction success",
+                        result
+                    })
+                })
+            }
+            
         })
     })
 }

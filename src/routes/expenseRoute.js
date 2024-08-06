@@ -6,11 +6,4 @@ const expenseRouter = Router();
 expenseRouter.use(validateToken);
 expenseRouter.post('/addExpense' , addNewExpenseController);
 
-
-
-
-
-
-
-
 export default expenseRouter;
