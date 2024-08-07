@@ -48,3 +48,37 @@ export const addNewExpenseController = (request,response) => {
         })
     })
 }
+export const getAllAuthenticatedUserExpense = ( request , response) => {
+    const authenticatedUsername = request.user.username;
+    const sql = `SELECT e.* FROM user u INNER JOIN expense e ON u.id = e.user_id WHERE u.username = ?`;
+    pool.query(sql , authenticatedUsername , (error,rows) => {
+        if(error) return response.status(500).json({
+            message : "Something went wrong"
+        })
+        response.status(200).json({
+            user : authenticatedUsername,
+            data : rows
+        })
+    })
+}
+export const editAuthenticatedUserExpense = (request,response) => {
+    const authenticatedUsername = request.user.username;
+    const { id } = request.params;
+    const { title,category,description } = request.body;
+
+    if(!title && !category && !description){
+        return response.status(400).json({
+            message : "Bad Request"
+        })
+    }
+    const insertValue = [title,category,description,id,authenticatedUsername];
+    const sql = `UPDATE expense SET title = ?,category = ?,description = ? WHERE id = ? AND user_id = (SELECT id FROM user WHERE username = ?)`;
+    pool.query(sql,insertValue,(error , result) => {
+        if(error)return response.status(500).json({
+            message : "Something went wrong"
+        })
+        response.status(200).json({
+            result
+        })
+    })
+}
