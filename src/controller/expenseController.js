@@ -82,3 +82,25 @@ export const editAuthenticatedUserExpense = (request,response) => {
         })
     })
 }
+export const expensePagination = (request,response) => {
+    const authenticatedUsername = request.user.username;
+    const limit = 2;
+    const page  = parseInt(request.query.page) | 1;
+    const offset = (page - 1) * limit; // = 10
+
+    const sql = `SELECT * FROM expense WHERE user_id = (SELECT id FROM user WHERE username = ?) LIMIT ? OFFSET ?`;
+    const insertValue = [authenticatedUsername,limit,offset];
+
+    pool.query(sql,insertValue,(error,rows) => {
+        if(error) return response.status(500).json({
+            message : error.message
+        });
+        response.status(200).json({
+            data : rows
+        })
+    })
+}
+// export const dailyReport = (request,response) => {
+//     const authenticatedUsername = request.user.username;
+//     const sql = `SELECT count(id) as Total_Expense FROM expense WHERE user_id = (SELECT id FROM user WHERE username = ?) AND DATE(created_at) = CURDATE()`;
+// }
